@@ -1,19 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
 import CategoryFilter from "./CategoryFilter";
-import NewTaskForm from "./NewTaskForm";
 import TaskList from "./TaskList";
 
-import { CATEGORIES, TASKS } from "../data";
-console.log("Here's the data you're working with");
-console.log({ CATEGORIES, TASKS });
+// Sample data
+const CATEGORIES = ["All", "Code", "Food", "Money", "Misc"];
+const TASKS = [
+  { text: "Buy rice", category: "Food" },
+  { text: "Save a tenner", category: "Money" },
+  { text: "Build a todo app", category: "Code" },
+  { text: "Build todo API", category: "Code" },
+  { text: "Get an ISA", category: "Money" },
+  { text: "Cook rice", category: "Food" },
+  { text: "Tidy house", category: "Misc" }
+];
 
 function App() {
+  const [filteredTasks, setFilteredTasks] = useState(TASKS);
+
+  const handleCategoryClick = (category) => {
+    if (category === "All") {
+      setFilteredTasks(TASKS); // Show all tasks
+    } else {
+      setFilteredTasks(TASKS.filter((task) => task.category === category));
+    }
+  };
+
   return (
-    <div className="App">
-      <h2>My tasks</h2>
-      <CategoryFilter />
-      <NewTaskForm />
-      <TaskList />
+    <div>
+      <CategoryFilter categories={CATEGORIES} onCategoryClick={handleCategoryClick} />
+      <TaskList tasks={filteredTasks} />
     </div>
   );
 }
