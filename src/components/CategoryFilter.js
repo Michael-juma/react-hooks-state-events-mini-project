@@ -1,27 +1,43 @@
 import React, { useState } from "react";
 
-function CategoryFilter({ categories, onCategoryChange }) {
-  const [selectedCategory, setSelectedCategory] = useState("All");
+function NewTaskForm({ categories, onTaskFormSubmit }) {
+  const [text, setText] = useState("");
+  const [category, setCategory] = useState(categories[1]); // Default to first real category, not "All"
 
-  function handleCategoryChange(category) {
-    setSelectedCategory(category);
-    onCategoryChange(category);  // Call the onCategoryChange prop to update the parent
+  function handleSubmit(e) {
+    e.preventDefault();
+    const newTask = { text, category };
+    onTaskFormSubmit(newTask);
+    setText(""); // Clear form
+    setCategory(categories[1]);
   }
 
   return (
-    <div className="categories">
-      <h5>Category filters</h5>
-      {categories.map(category => (
-        <button
-          key={category}
-          onClick={() => handleCategoryChange(category)}
-          className={category === selectedCategory ? "selected" : ""}
+    <form className="new-task-form" onSubmit={handleSubmit}>
+      <label>
+        Details
+        <input 
+          type="text" 
+          name="text" 
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+        />
+      </label>
+      <label>
+        Category
+        <select 
+          name="category"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
         >
-          {category}
-        </button>
-      ))}
-    </div>
+          {categories.filter(cat => cat !== "All").map(cat => (
+            <option key={cat} value={cat}>{cat}</option>
+          ))}
+        </select>
+      </label>
+      <input type="submit" value="Add task" />
+    </form>
   );
 }
 
-export default CategoryFilter;
+export default NewTaskForm;

@@ -1,50 +1,38 @@
 import React, { useState } from "react";
 
-function NewTaskForm({ onTaskFormSubmit }) {
+function NewTaskForm({ categories, onTaskFormSubmit }) {
   const [text, setText] = useState("");
-  const [category, setCategory] = useState("Code");
+  const [category, setCategory] = useState(categories[1]); // Default to first real category, not "All"
 
-  function handleTextChange(event) {
-    setText(event.target.value);
-  }
-
-  function handleCategoryChange(event) {
-    setCategory(event.target.value);
-  }
-
-  function handleSubmit(event) {
-    event.preventDefault();
-    // Call the callback prop with the task data
-    onTaskFormSubmit({ text, category });
-    // Optionally, reset the form fields
-    setText("");
-    setCategory("Code");
+  function handleSubmit(e) {
+    e.preventDefault();
+    const newTask = { text, category };
+    onTaskFormSubmit(newTask);
+    setText(""); // Clear form
+    setCategory(categories[1]);
   }
 
   return (
     <form className="new-task-form" onSubmit={handleSubmit}>
       <label>
         Details
-        <input
-          type="text"
-          name="text"
+        <input 
+          type="text" 
+          name="text" 
           value={text}
-          onChange={handleTextChange}
-          aria-label="Details"
+          onChange={(e) => setText(e.target.value)}
         />
       </label>
       <label>
         Category
-        <select
+        <select 
           name="category"
           value={category}
-          onChange={handleCategoryChange}
-          aria-label="Category"
+          onChange={(e) => setCategory(e.target.value)}
         >
-          <option value="Code">Code</option>
-          <option value="Food">Food</option>
-          <option value="Money">Money</option>
-          <option value="Misc">Misc</option>
+          {categories.filter(cat => cat !== "All").map(cat => (
+            <option key={cat} value={cat}>{cat}</option>
+          ))}
         </select>
       </label>
       <input type="submit" value="Add task" />
